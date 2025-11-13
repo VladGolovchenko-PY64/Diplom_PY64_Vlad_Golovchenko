@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}Кошелёк{% endblock %}
+{% block content %}
+<h2>Ваши кошельки</h2>
+<ul>
+{% for wallet in wallets %}
+    <li>
+        {{ wallet.name }} — Баланс: {{ wallet.balance }}
+    </li>
+{% empty %}
+    <li>Нет кошельков</li>
+{% endfor %}
+</ul>
+{% endblock %}

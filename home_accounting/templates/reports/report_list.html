@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}Отчёты{% endblock %}
+{% block content %}
+<h2>Ваши отчёты</h2>
+<ul>
+{% for report in reports %}
+    <li>
+        {{ report.start_date }} - {{ report.end_date }} |
+        Доход: {{ report.total_income }} | Расход: {{ report.total_expense }}
+        {% if report.is_ready %}
+            <a href="{{ report.file.url }}">Скачать</a>
+        {% else %}
+            <em>Генерируется...</em>
+        {% endif %}
+    </li>
+{% empty %}
+    <li>Нет созданных отчётов</li>
+{% endfor %}
+</ul>
+<a href="{% url 'reports:create' %}">Создать новый отчёт</a>
+{% endblock %}

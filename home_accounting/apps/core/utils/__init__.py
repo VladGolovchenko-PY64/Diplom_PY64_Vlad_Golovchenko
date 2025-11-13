@@ -1,0 +1,2 @@
+# apps/core/utils/__init__.py
+# Утилиты и хелперы

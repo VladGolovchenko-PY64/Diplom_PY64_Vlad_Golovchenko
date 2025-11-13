@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}Транзакции{% endblock %}
+{% block content %}
+<h2>Список транзакций</h2>
+<table>
+    <tr>
+        <th>Дата</th>
+        <th>Тип</th>
+        <th>Категория</th>
+        <th>Сумма</th>
+    </tr>
+    {% for transaction in transactions %}
+    <tr>
+        <td>{{ transaction.date|date:"Y-m-d" }}</td>
+        <td>{{ transaction.get_type_display }}</td>
+        <td>{{ transaction.category.name if transaction.category else "-" }}</td>
+        <td>{{ transaction.amount }}</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="4">Транзакции отсутствуют</td></tr>
+    {% endfor %}
+</table>
+{% endblock %}

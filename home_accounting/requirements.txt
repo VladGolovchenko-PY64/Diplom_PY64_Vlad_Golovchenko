@@ -1,0 +1,26 @@
+# Django и REST API
+Django>=4.2,<5.0
+djangorestframework>=3.14
+
+# JWT аутентификация (совместимая версия)
+djangorestframework-simplejwt==5.5.1
+
+# PostgreSQL
+psycopg2-binary>=2.9
+
+# Celery и Redis
+celery>=5.5
+redis>=5.0
+
+# Работа с Excel и CSV
+pandas>=2.1
+openpyxl>=3.1
+
+# CORS для API
+django-cors-headers>=4.0
+
+# Дополнительные утилиты
+python-dotenv>=1.0
+Pillow>=10.0.0
+gunicorn>=21.2
+

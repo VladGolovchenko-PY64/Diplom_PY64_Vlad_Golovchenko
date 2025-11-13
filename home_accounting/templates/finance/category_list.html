@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}Категории{% endblock %}
+{% block content %}
+<h2>Категории расходов и доходов</h2>
+<ul>
+{% for category in categories %}
+    <li>{{ category.name }} ({{ category.get_type_display }})</li>
+{% empty %}
+    <li>Категории отсутствуют</li>
+{% endfor %}
+</ul>
+{% endblock %}
