@@ -1,7 +1,6 @@
 # apps/core/exceptions/base_exceptions.py
-
 class AppBaseException(Exception):
-    """Базовое приложение исключений"""
+    """Базовое исключение приложения с кодом и сообщением."""
     status_code = 500
     message = "Внутренняя ошибка приложения"
 

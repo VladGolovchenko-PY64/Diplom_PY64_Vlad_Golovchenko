@@ -9,6 +9,7 @@ def create_default_family(sender, instance, created, **kwargs):
     Создаем семью автоматически для новых пользователей, если необходимо.
     """
     if created:
-        # Пример: можно создавать отдельную семью для первого пользователя
-        # Или оставлять пустым и создавать через логику сервиса
+        # Здесь можно создавать семью по умолчанию, например:
+        # family = Family.objects.create(name=f"{instance.username}'s Family")
+        # family.members.add(instance)
         pass

@@ -1,14 +1,13 @@
 # apps/core/db/connection.py
-from django.db import connections, OperationalError
+from django.db import connection
 
-def check_db_connection(alias="default") -> bool:
+def execute_raw(sql, params=None):
     """
-    Проверка соединения с базой данных.
-    Возвращает True, если соединение успешно, иначе False.
+    Выполнение "сырого" SQL-запроса.
     """
-    try:
-        connection = connections[alias]
-        connection.cursor()
-        return True
-    except OperationalError:
-        return False
+    with connection.cursor() as cursor:
+        cursor.execute(sql, params or [])
+        if cursor.description:
+            columns = [col[0] for col in cursor.description]
+            return [dict(zip(columns, row)) for row in cursor.fetchall()]
+        return None

@@ -1,0 +1,10 @@
+<!-- edit_category.html -->
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<h1>Редактировать категорию</h1>
+<form method="post">{% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Сохранить</button>
+</form>
+{% endblock %}

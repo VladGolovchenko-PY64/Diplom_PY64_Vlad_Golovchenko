@@ -1,0 +1,11 @@
+<!-- delete_category.html -->
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<h1>Удалить категорию?</h1>
+<p>Вы точно хотите удалить категорию "{{ object.name }}"?</p>
+<form method="post">{% csrf_token %}
+  <button type="submit">Да, удалить</button>
+  <a href="{% url 'finance:dashboard' %}">Отмена</a>
+</form>
+{% endblock %}

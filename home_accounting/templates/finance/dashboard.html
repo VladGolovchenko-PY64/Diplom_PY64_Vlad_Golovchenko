@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Финансовый дашборд{% endblock %}
+
+{% block content %}
+<h1>Финансовый дашборд</h1>
+
+<!-- Кнопки действий -->
+<div style="margin-bottom: 20px;">
+    <a href="{% url 'finance:add_wallet' %}">Добавить кошелек</a> |
+    <a href="{% url 'finance:add_category' %}">Добавить категорию</a> |
+    <a href="{% url 'finance:add_transaction' %}">Добавить транзакцию</a>
+</div>
+
+<!-- Кошельки -->
+<h2>Кошельки</h2>
+<ul>
+    {% for wallet in wallets %}
+<div class="wallet-card">
+    <h3>{{ wallet.name }}</h3>
+    <p>Баланс: {{ wallet.balance }} {{ wallet.currency }}</p>
+</div>
+{% endfor %}
+
+</ul>
+
+<!-- Категории -->
+<h2>Категории</h2>
+<ul>
+    {% for category in categories %}
+        <li>
+            {{ category.name }} ({{ category.type }})
+            <a href="{% url 'finance:category_edit' category.id %}">Редактировать</a>
+            <a href="{% url 'finance:category_delete' category.id %}">Удалить</a>
+        </li>
+    {% empty %}
+        <li>Категорий нет</li>
+    {% endfor %}
+</ul>
+
+<!-- Последние транзакции -->
+<h2>Последние транзакции</h2>
+<table border="1" cellpadding="5">
+    <tr>
+        <th>Дата</th>
+        <th>Сумма</th>
+        <th>Тип</th>
+        <th>Кошелек</th>
+        <th>Категория</th>
+        <th>Описание</th>
+        <th>Баланс после</th>
+    </tr>
+    {% for tx, balance_after in transactions_with_balance %}
+<tr>
+    <td>{{ tx.date }}</td>
+    <td>
+        {% if tx.category.type == 'expense' %}
+            <span style="color:red;">-{{ tx.amount }}</span>
+        {% else %}
+            <span style="color:green;">+{{ tx.amount }}</span>
+        {% endif %}
+    </td>
+    <td>{{ tx.get_type_display }}</td>
+    <td>{{ tx.wallet.name }}</td>
+    <td>{{ tx.category.name }}</td>
+    <td>{{ tx.description }}</td>
+    <td>{{ balance_after }}</td>
+</tr>
+{% empty %}
+<tr>
+    <td colspan="7">Транзакций нет</td>
+</tr>
+{% endfor %}
+</table>
+
+<!-- Суммы по категориям -->
+<h2>Суммы расходов по категориям</h2>
+<ul>
+    {% for category, total in category_sums.items %}
+        <li>{{ category }}: {{ total }}</li>
+    {% empty %}
+        <li>Нет категорий с расходами</li>
+    {% endfor %}
+</ul>
+
+{% endblock %}

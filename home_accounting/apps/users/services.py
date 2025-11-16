@@ -8,7 +8,7 @@ def create_family(owner, name):
     """
     Создание новой семьи.
     """
-    if not owner.is_admin_user:
+    if not owner.is_parent:
         raise LogicError("Только родитель может создать семью.")
     from .models import Family
-    return Family.objects.create(owner=owner, name=name)
+    return Family.objects.create(name=name, members=[owner])

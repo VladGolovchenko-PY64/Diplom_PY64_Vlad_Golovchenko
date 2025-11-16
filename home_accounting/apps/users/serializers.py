@@ -1,31 +1,28 @@
 # apps/users/serializers.py
 from rest_framework import serializers
-from django.contrib.auth import get_user_model
-from .models import Family
-
-User = get_user_model()
+from .models import CustomUser
 
 class RegisterSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True, min_length=6)
-
     class Meta:
-        model = User
+        model = CustomUser
         fields = ("username", "email", "password")
+        extra_kwargs = {"password": {"write_only": True}}
 
     def create(self, validated_data):
-        user = User.objects.create_user(**validated_data)
+        user = CustomUser.objects.create_user(
+            username=validated_data["username"],
+            email=validated_data["email"],
+            password=validated_data["password"]
+        )
         return user
-
 
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
-        fields = ("id", "username", "email", "phone", "is_admin_user")
+        model = CustomUser
+        fields = ("id", "username", "email", "gender", "avatar", "is_parent")
 
-
-class FamilySerializer(serializers.ModelSerializer):
-    members = serializers.StringRelatedField(many=True, read_only=True)
-
-    class Meta:
-        model = Family
-        fields = ("id", "name", "owner", "members")
+class FamilySerializer(serializers.Serializer):
+    # В данном приложении Family модель будет добавлена позже, сериализатор можно расширить
+    id = serializers.IntegerField(read_only=True)
+    name = serializers.CharField()
+    members = serializers.ListField(child=serializers.CharField(), read_only=True)

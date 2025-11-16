@@ -1,17 +1,9 @@
-# Можно добавить вспомогательные функции для фильтрации данных, агрегации, графиков и т.д.
-from django.db.models import QuerySet
-
-def filter_transactions(
-    transactions: QuerySet,
-    category: str | None = None,
-    min_amount: float | None = None,
-    max_amount: float | None = None
-) -> QuerySet:
-
+# apps/reports/utils.py
+def filter_transactions(transactions, category=None, min_amount=None, max_amount=None):
     if category:
         transactions = transactions.filter(category__name=category)
-    if min_amount is not None:
+    if min_amount:
         transactions = transactions.filter(amount__gte=min_amount)
-    if max_amount is not None:
+    if max_amount:
         transactions = transactions.filter(amount__lte=max_amount)
     return transactions

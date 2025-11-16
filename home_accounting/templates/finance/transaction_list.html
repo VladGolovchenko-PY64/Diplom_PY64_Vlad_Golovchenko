@@ -1,4 +1,7 @@
+
+
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}Транзакции{% endblock %}
 {% block content %}
 <h2>Список транзакций</h2>
@@ -11,9 +14,9 @@
     </tr>
     {% for transaction in transactions %}
     <tr>
-        <td>{{ transaction.date|date:"Y-m-d" }}</td>
-        <td>{{ transaction.get_type_display }}</td>
-        <td>{{ transaction.category.name if transaction.category else "-" }}</td>
+        <td>{{ transaction.date }}</td>
+        <td>{{ transaction.category.get_type_display }}</td>
+        <td>{{ transaction.category.name }}</td>
         <td>{{ transaction.amount }}</td>
     </tr>
     {% empty %}

@@ -1,7 +1,7 @@
 # apps/reports/tests.py
 from django.test import TestCase
 from apps.users.models import CustomUser
-from apps.finance.models import Transaction, Wallet, Category
+from apps.finance.models import Wallet, Transaction, Category
 from .models import Report
 from datetime import date
 

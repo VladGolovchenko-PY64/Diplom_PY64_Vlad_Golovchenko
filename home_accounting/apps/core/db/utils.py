@@ -1,11 +1,12 @@
 # apps/core/db/utils.py
-from functools import wraps
-from django.db import transaction
-
-def atomic_transaction(func):
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        with transaction.atomic():
-            return func(*args, **kwargs)
-    return wrapper
-
+def chunked_queryset(queryset, chunk_size=100):
+    """
+    Генератор, который возвращает элементы queryset порциями.
+    """
+    start = 0
+    while True:
+        chunk = queryset[start:start + chunk_size]
+        if not chunk:
+            break
+        yield chunk
+        start += chunk_size

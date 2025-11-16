@@ -1,9 +1,9 @@
 # apps/users/views.py
 from rest_framework import generics, permissions
-from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.response import Response
-from .serializers import RegisterSerializer, ProfileSerializer
+from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import get_user_model
+from .serializers import RegisterSerializer, ProfileSerializer
 from apps.core.mixins import ResponseMixin
 
 User = get_user_model()
@@ -26,18 +26,21 @@ class RegisterView(ResponseMixin, generics.CreateAPIView):
             data={
                 "user": ProfileSerializer(user).data,
                 "refresh": str(refresh),
-                "access": str(refresh.access_token)
+                "access": str(refresh.access_token),
             },
             message="Пользователь успешно зарегистрирован."
         )
 
 
-class ProfileView(ResponseMixin, generics.RetrieveAPIView):
+class ProfileView(ResponseMixin, generics.RetrieveUpdateAPIView):
     """
-    Профиль текущего пользователя.
+    Просмотр/редактирование профиля текущего пользователя.
     """
     serializer_class = ProfileSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get_object(self):
         return self.request.user
+
+    def perform_update(self, serializer):
+        serializer.save()

@@ -3,25 +3,15 @@ from .base_exceptions import AppBaseException
 
 
 class LogicError(AppBaseException):
-    """Ошибка логики приложения."""
     status_code = 400
-
-    def __init__(self, message=None):
-        self.message = message or "Ошибка логики приложения."
-        super().__init__(self.message)
+    message = "Ошибка логики приложения."
 
 
 class UnauthorizedActionError(AppBaseException):
-    """Ошибка при попытке действия, не разрешённого пользователю."""
-
-    def __init__(self, message=None):
-        self.message = message or "Это действие не разрешено для текущего пользователя."
-        super().__init__(self.message)
+    status_code = 403
+    message = "Действие не разрешено для текущего пользователя."
 
 
 class InsufficientFundsError(AppBaseException):
-    """Ошибка при недостатке средств на счёте."""
-
-    def __init__(self, message=None):
-        self.message = message or "Недостаточно средств на счёте для выполнения этого действия."
-        super().__init__(self.message)
+    status_code = 400
+    message = "Недостаточно средств на счёте."

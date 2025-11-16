@@ -1,12 +1,14 @@
 # apps/core/exceptions/handlers.py
-from .base_exceptions import AppBaseException
+from .api_exceptions import APIError
+from .db_exceptions import DatabaseError
 
-def map_exception_to_response(exception):
+def map_exception_to_response(exc):
     """
-    Преобразует внутренние исключения в структуру JSON-ответа.
+    Преобразует исключение в словарь с полями 'message' и 'status'.
     """
-    if isinstance(exception, AppBaseException):
-        return {"status": exception.status_code, "message": exception.message}
-
-    # Неизвестные ошибки
-    return {"status": 500, "message": "Неизвестная ошибка сервера"}
+    if isinstance(exc, APIError):
+        return {"message": str(exc), "status": exc.status_code}
+    elif isinstance(exc, DatabaseError):
+        return {"message": "Ошибка базы данных", "status": 500}
+    else:
+        return {"message": "Внутренняя ошибка сервера", "status": 500}

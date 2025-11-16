@@ -1,21 +1,21 @@
-# config/urls.py
+# home_accounting/config/urls.py
 from django.contrib import admin
 from django.urls import path, include
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from apps.core.views import index
 from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
+    path("", index, name="home"),
     path("admin/", admin.site.urls),
 
-    # JWT
-    path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
-    path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+    # HTML-шаблоны
+    path("users/", include("apps.users.urls_template", namespace="users_template")),  # страницы регистрации/логина
+    path("finance/", include("apps.finance.urls_template", namespace="finance")),
+    path("reports/", include("apps.reports.urls", namespace="reports")),
 
-    # Приложения
-    path("api/users/", include("apps.users.urls")),
-    path("api/finance/", include("apps.finance.urls")),
-    path("api/reports/", include("apps.reports.urls")),
+    # API
+    path("api/users/", include("apps.users.urls", namespace="users_api")),  # DRF API
 ]
 
 if settings.DEBUG:
