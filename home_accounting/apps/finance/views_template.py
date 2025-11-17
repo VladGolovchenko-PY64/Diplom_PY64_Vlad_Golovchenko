@@ -49,20 +49,8 @@ class AddTransactionView(View):
         form = TransactionForm(request.POST, user=request.user)
         if form.is_valid():
             transaction = form.save(commit=False)
-            transaction.user = request.user  # назначаем владельца
-
-            # Обновляем баланс кошелька в зависимости от типа категории
-            wallet = transaction.wallet
-            if transaction.category.type == Category.EXPENSE:
-                if wallet.balance < transaction.amount:
-                    form.add_error("amount", "Недостаточно средств на кошельке.")
-                    return render(request, self.template_name, {"form": form})
-                wallet.balance -= transaction.amount
-            else:  # доход
-                wallet.balance += transaction.amount
-
-            wallet.save()
-            transaction.save()
+            transaction.user = request.user
+            transaction.save()   # баланс изменится ТОЛЬКО тут через модель
             return redirect("finance:dashboard")
 
         return render(request, self.template_name, {"form": form})
@@ -109,10 +97,18 @@ class DashboardView(TemplateView):
         transaction_balances = []
 
         for tx in transactions:
+            # --- Если категории нет (удалена) ---
+            if tx.category is None:
+                # НИКАК НЕ ВЛИЯЕМ на баланс, просто показываем текущий
+                transaction_balances.append(wallet_current_balance[tx.wallet.id])
+                continue
+
+            # --- Если категория есть ---
             if tx.category.type == Category.EXPENSE:
                 wallet_current_balance[tx.wallet.id] -= tx.amount
             else:  # доход
                 wallet_current_balance[tx.wallet.id] += tx.amount
+
             transaction_balances.append(wallet_current_balance[tx.wallet.id])
 
         context["transaction_balances"] = transaction_balances

@@ -50,24 +50,31 @@ class Transaction(TimestampMixin, UserOwnedMixin):
         with db_transaction.atomic():
             super().save(*args, **kwargs)
 
-            # обновляем баланс текущего кошелька
-            if self.category.type == Category.INCOME:
-                self.wallet.balance += self.amount
+            # Если категория удалена — НЕ меняем баланс
+            if self.category is None:
+                pass
             else:
-                if self.amount > self.wallet.balance:
-                    raise InsufficientFundsError("Недостаточно средств на счете.")
-                self.wallet.balance -= self.amount
+                if self.category.type == Category.INCOME:
+                    self.wallet.balance += self.amount
+                else:  # расход
+                    if self.amount > self.wallet.balance:
+                        raise InsufficientFundsError("Недостаточно средств на счете.")
+                    self.wallet.balance -= self.amount
+
             self.wallet.save()
 
             # если редактирование и изменился кошелек или сумма
             if not is_new and old_wallet:
-                if old_wallet != self.wallet or old_amount != self.amount or old_category_type != self.category.type:
-                    # откатываем старое значение
-                    if old_category_type == Category.INCOME:
-                        old_wallet.balance -= old_amount
-                    else:
-                        old_wallet.balance += old_amount
-                    old_wallet.save()
+                new_category_type = self.category.type if self.category else None
+
+                if old_wallet != self.wallet or old_amount != self.amount or old_category_type != new_category_type:
+
+                    if old_category_type is not None:
+                        if old_category_type == Category.INCOME:
+                            old_wallet.balance -= old_amount
+                        else:  # расход
+                            old_wallet.balance += old_amount
+                        old_wallet.save()
 
     def __str__(self):
         return f"{self.category} | {self.amount}"
