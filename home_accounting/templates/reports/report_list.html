@@ -1,24 +1,55 @@
-
-
 {% extends 'base.html' %}
 {% load static %}
 {% block title %}Отчёты{% endblock %}
+
 {% block content %}
 <h2>Ваши отчёты</h2>
-<ul>
-{% for report in reports %}
-    <li>
-        {{ report.start_date }} - {{ report.end_date }} |
-        Доход: {{ report.total_income }} | Расход: {{ report.total_expense }}
-        {% if report.is_ready %}
-            <a href="{{ report.file.url }}">Скачать</a>
-        {% else %}
-            <em>Генерируется...</em>
-        {% endif %}
-    </li>
-{% empty %}
-    <li>Нет созданных отчётов</li>
-{% endfor %}
-</ul>
-<a href="{% url 'reports:create' %}">Создать новый отчёт</a>
+
+{% if reports %}
+<table style="width:100%; border-collapse: collapse;">
+    <thead>
+        <tr style="background-color: #f2f2f2;">
+            <th style="border: 1px solid #ddd; padding: 8px;">Период</th>
+            <th style="border: 1px solid #ddd; padding: 8px;">Доход</th>
+            <th style="border: 1px solid #ddd; padding: 8px;">Расход</th>
+            <th style="border: 1px solid #ddd; padding: 8px;">Статус</th>
+            <th style="border: 1px solid #ddd; padding: 8px;">Файл</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for report in reports %}
+        <tr>
+            <td style="border: 1px solid #ddd; padding: 8px;">
+                {{ report.start_date }} — {{ report.end_date }}
+            </td>
+            <td style="border: 1px solid #ddd; padding: 8px; color: green;">
+                {{ report.total_income }}
+            </td>
+            <td style="border: 1px solid #ddd; padding: 8px; color: red;">
+                {{ report.total_expense }}
+            </td>
+            <td style="border: 1px solid #ddd; padding: 8px;">
+                {% if report.is_ready %}
+                    Готов
+                {% else %}
+                    <em>Генерируется...</em>
+                {% endif %}
+            </td>
+            <td style="border: 1px solid #ddd; padding: 8px;">
+                {% if report.is_ready and report.file %}
+                    <a href="{{ report.file.url }}" target="_blank">Скачать</a>
+                {% else %}
+                    -
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>У вас ещё нет созданных отчётов.</p>
+{% endif %}
+
+<br>
+<a href="{% url 'reports:report_create' %}">Создать новый отчёт</a>
 {% endblock %}

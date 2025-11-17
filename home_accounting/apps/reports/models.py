@@ -25,4 +25,4 @@ class Report(TimestampMixin):
     is_ready = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"Отчёт {self.user.username} ({self.period_type})"
+        return f"Отчёт {self.start_date} — {self.end_date}"

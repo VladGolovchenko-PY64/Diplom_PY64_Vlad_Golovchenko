@@ -4,6 +4,30 @@
 
 {% block content %}
 <h1>Профиль пользователя</h1>
-<p>Имя пользователя: {{ user.username }}</p>
-<p>Email: {{ user.email }}</p>
+
+<div style="display: flex; align-items: center; gap: 30px; margin-top: 20px;">
+    <!-- Аватар -->
+    <div>
+        {% if user.avatar %}
+            <img src="{{ user.avatar.url }}" alt="Аватар" style="width:150px; height:150px; border-radius:50%; object-fit:cover; border: 2px solid #ccc;">
+        {% else %}
+            <img src="{% static 'img/avatar_placeholder.png' %}" alt="Аватар" style="width:150px; height:150px; border-radius:50%; object-fit:cover; border: 2px solid #ccc;">
+        {% endif %}
+    </div>
+
+    <!-- Информация -->
+    <div style="line-height: 1.8; font-size: 16px;">
+        <p><strong>Имя пользователя:</strong> {{ user.username }}</p>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+        <p><strong>Пол:</strong>
+            {% if user.gender %}
+                {{ user.get_gender_display }}
+            {% else %}
+                Не указан
+            {% endif %}
+        </p>
+        <p><strong>Статус родителя:</strong> {{ user.is_parent|yesno:"Да,Нет" }}</p>
+        <p><strong>Дата регистрации:</strong> {{ user.date_joined|date:"d.m.Y H:i" }}</p>
+    </div>
+</div>
 {% endblock %}
