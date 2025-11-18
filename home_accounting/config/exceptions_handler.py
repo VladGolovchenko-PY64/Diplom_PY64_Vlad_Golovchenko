@@ -10,33 +10,46 @@ logger = logging.getLogger(__name__)
 
 def handle_exception(exc):
     """
-    Универсальный обработчик исключений.
-    Для известных App-исключений возвращает контролируемое сообщение.
-    Для прочих — логирует и возвращает generic ответ.
+    Универсальный, безопасный обработчик исключений.
+    - контролируемые исключения → отдаём их сообщение
+    - остальные → логируем и отдаём безопасное сообщение
     """
     try:
         response = map_exception_to_response(exc)
         status = response.get("status", 500)
         message = response.get("message", "Внутренняя ошибка сервера")
 
-        # Логируем подробности для разработчиков
+        # Логируем для разработчиков
         logger.exception(f"Handled exception: {exc}")
 
-        # В DEBUG включаем подробный traceback в JSON
         if settings.DEBUG:
             return JsonResponse({
                 "detail": message,
                 "exception": str(exc),
-                "traceback": traceback.format_exc()
+                "traceback": traceback.format_exc(),
             }, status=status)
 
-        return JsonResponse({"detail": message}, status=status)
+        # В продакшене — никаких деталей!
+        return JsonResponse({
+            "detail": message
+        }, status=status)
 
     except Exception as e:
-        # Если что-то сломалось в обработчике, вернём минимальный ответ
-        logger.error("Exception in exception handler: %s\n%s", e, traceback.format_exc())
+        logger.error(
+            "Exception in exception handler: %s\n%s",
+            e,
+            traceback.format_exc()
+        )
+
+        if settings.DEBUG:
+            # В DEBUG можно показать
+            return JsonResponse({
+                "detail": "Ошибка в обработчике исключений",
+                "exception": str(e),
+                "traceback": traceback.format_exc()
+            }, status=500)
+
+        # В продакшене — строго минимальный ответ
         return JsonResponse({
-            "detail": "Внутренняя ошибка сервера",
-            "exception": str(e),
-            "traceback": traceback.format_exc() if settings.DEBUG else ""
+            "detail": "Внутренняя ошибка сервера"
         }, status=500)
