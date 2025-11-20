@@ -31,6 +31,8 @@ services:
     depends_on:
       - db
       - redis
+    volumes:
+      - media_data:/app/media
 
   celery:
     build: .
@@ -41,6 +43,9 @@ services:
     depends_on:
       - db
       - redis
+    volumes:
+      - media_data:/app/media
 
 volumes:
   postgres_data:
+  media_data:
