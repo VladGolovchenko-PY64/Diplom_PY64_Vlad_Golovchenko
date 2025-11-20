@@ -3,18 +3,56 @@
 {% block title %}Главная{% endblock %}
 
 {% block content %}
-<h1>Добро пожаловать в Home Accounting!</h1>
+<div class="text-center my-5">
+    <h1 class="mb-3">Добро пожаловать в <strong>Home Accounting</strong>!</h1>
+    <p class="lead">Приложение для управления личными финансами: кошельки, категории, транзакции и отчёты.</p>
 
-{% if user.is_authenticated %}
-    <p>Привет, {{ user.username }}!</p>
-    <p><a href="{% url 'users_template:profile' %}">Перейти в профиль</a></p>
-    <p><a href="{% url 'users_template:logout' %}">Выйти</a></p>
-{% else %}
-    <p>Вы не авторизованы.</p>
-    <p>
-        <a href="{% url 'users_template:login' %}">Войти</a>
-        или
-        <a href="{% url 'users_template:register' %}">Зарегистрироваться</a>
-    </p>
-{% endif %}
+    <!-- Карточки возможностей -->
+    <div class="row mt-4 justify-content-center g-4">
+        <div class="col-sm-6 col-md-4 col-lg-3">
+            <div class="card p-3 shadow-sm h-100 feature-card">
+                <h5><i class="bi bi-wallet2"></i> Кошельки</h5>
+                <p>Создавайте и отслеживайте балансы своих кошельков.</p>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-4 col-lg-3">
+            <div class="card p-3 shadow-sm h-100 feature-card">
+                <h5><i class="bi bi-card-list"></i> Категории</h5>
+                <p>Удобно классифицируйте доходы и расходы.</p>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-4 col-lg-3">
+            <div class="card p-3 shadow-sm h-100 feature-card">
+                <h5><i class="bi bi-cash-stack"></i> Транзакции</h5>
+                <p>Добавляйте доходы и расходы и анализируйте историю.</p>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-4 col-lg-3">
+            <div class="card p-3 shadow-sm h-100 feature-card">
+                <h5><i class="bi bi-file-earmark-text"></i> Отчёты</h5>
+                <p>Генерируйте финансовые отчёты в Excel и анализируйте расходы.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Кнопки авторизации для гостей -->
+    {% if not user.is_authenticated %}
+    <div class="mt-5">
+        <a href="{% url 'users_template:login' %}" class="btn btn-primary btn-lg me-2">Войти</a>
+        <a href="{% url 'users_template:register' %}" class="btn btn-outline-primary btn-lg">Регистрация</a>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    /* Эффект при наведении на карточки */
+    .feature-card {
+        transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s;
+        cursor: pointer;
+    }
+    .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 0.75rem 1.5rem rgba(0,0,0,0.2);
+    }
+</style>
 {% endblock %}

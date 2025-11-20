@@ -1,11 +1,14 @@
 # apps/reports/views.py
+from django.db import transaction
 from django.views.generic import ListView, CreateView
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Report
 from .forms import ReportForm
 from .tasks import generate_report_task
-from django.db import transaction
+import logging
+
+logger = logging.getLogger(__name__)
 
 class ReportListView(LoginRequiredMixin, ListView):
     model = Report
@@ -24,9 +27,8 @@ class ReportCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         report = form.save(commit=False)
         report.user = self.request.user
-        report.save()  # объект в БД создан, но транзакция ещё не зафиксирована
-
-        # Запуск Celery только ПОСЛЕ commit транзакции
+        report.save()
         transaction.on_commit(lambda: generate_report_task.delay(report.id))
-
         return super().form_valid(form)
+
+

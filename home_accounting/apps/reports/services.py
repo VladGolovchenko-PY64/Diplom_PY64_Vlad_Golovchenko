@@ -1,11 +1,14 @@
 # apps/reports/services.py
 import os
+import logging
 from decimal import Decimal
 import pandas as pd
 from django.conf import settings
 from django.db.models import Sum
 from apps.finance.models import Transaction, Category
 from .models import Report
+
+logger = logging.getLogger(__name__)
 
 def generate_report(report: Report):
     """
@@ -45,6 +48,8 @@ def generate_report(report: Report):
     file_name = f"report_{report.id}.xlsx"
     file_path = os.path.join(reports_dir, file_name)
 
+    logger.info(f"Saving Excel report to: {file_path}")
+
     # Сохраняем Excel
     df.to_excel(file_path, index=False)
 
@@ -54,3 +59,5 @@ def generate_report(report: Report):
     report.total_expense = expense
     report.is_ready = True
     report.save()
+
+    logger.info(f"Report saved: {report.file.name}")

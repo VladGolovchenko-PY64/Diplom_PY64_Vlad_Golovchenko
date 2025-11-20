@@ -60,7 +60,13 @@
             <span style="color:green;">+{{ tx.amount }}</span>
         {% endif %}
     </td>
-    <td>{{ tx.get_type_display }}</td>
+    <td>
+    {% if tx.category.type == 'expense' %}
+        <span style="color:red;">Расход</span>
+    {% else %}
+        <span style="color:green;">Доход</span>
+    {% endif %}
+    </td>
     <td>{{ tx.wallet.name }}</td>
     <td>{{ tx.category.name }}</td>
     <td>{{ tx.description }}</td>

@@ -32,7 +32,8 @@ services:
       - db
       - redis
     volumes:
-      - media_data:/app/media
+      - ./media:/app/media
+    restart: always
 
   celery:
     build: .
@@ -44,8 +45,8 @@ services:
       - db
       - redis
     volumes:
-      - media_data:/app/media
+      - ./media:/app/media
+    restart: always
 
 volumes:
   postgres_data:
-  media_data:
